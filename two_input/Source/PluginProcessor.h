@@ -62,17 +62,20 @@ public:
 
 private:
     //==============================================================================
-//    RTNeural::ModelT<float, 2, 64,
-//        RTNeural::Conv1DT<float, 2, 36, 12, 1>,
-//        RTNeural::Conv1DT<float, 36, 36, 12, 1>,
-//        RTNeural::LSTMLayerT<float, 36, 96>,
-//        RTNeural::DenseT<float, 96, 64>
-//    > neuralNet[2];
+    
+    const char* TS9_data {BinaryData::ts_nine_json};
+    const int TS9_dataSize {BinaryData::ts_nine_jsonSize};
+    
+    const char* Mini_data {BinaryData::ts_mini_json};
+    const int Mini_dataSize {BinaryData::ts_mini_jsonSize};
+    
+    std::unique_ptr<const char*> model_pointer;
+    std::unique_ptr<const int> modelSize_pointer;
+    
+    bool prev_TS9_b {true};
     
     RTNeural::ModelT<float, 2, 1,
-    // LSTM<inSz,hiddenSz>
     RTNeural::LSTMLayerT<float, 2, 64>,
-    // Dense<inSz,outSz>
     RTNeural::DenseT<float, 64, 1>
     > neuralNet[2];
     

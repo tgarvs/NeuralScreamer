@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
+#include "Components.h"
 
 //==============================================================================
 /**
@@ -23,22 +24,45 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    void silver_borders (juce::Graphics& g);
+    
 
 private:
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     Two_inputAudioProcessor& audioProcessor;
     
-    juce::Slider driveSlider;
-    juce::Label driveLabel;
+    CustomLNF myCustomLNF;
+    
+    CustomDial driveSlider;
+    CustomLabel driveLabel;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> driveSliderAttachment;
     
-    juce::Slider volSlider;
-    juce::Label volLabel;
+    CustomDial volSlider;
+    CustomLabel volLabel;
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> volSliderAttachment;
     
-//    juce::DrawableRectangle outline_one;
+    CustomDial toneSlider;
+    CustomLabel toneLabel;
+    std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> toneSliderAttachment;
 
+    
+    CustomLabel buttonLabel;
+    juce::ToggleButton TS9_model {"TS9 Model"}, Mini_model {"Mini Model"};
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> TS9_button_attachment, Mini_button_attachment;
+    
+    
+    enum RadioButtonIds {
+        model_buttons = 1001
+    };
+    
+    
+    
+    float location_x {0};
+    float location_y {float(getHeight()/2)};
+    float speed {3};
+    
+    
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Two_inputAudioProcessorEditor)
 };

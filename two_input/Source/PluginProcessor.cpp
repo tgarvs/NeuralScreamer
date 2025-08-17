@@ -28,7 +28,10 @@ Two_inputAudioProcessor::Two_inputAudioProcessor()
 //    neuralNet[0].parseJson (jsonInput);
 //    neuralNet[1].parseJson (jsonInput);
     
-    juce::MemoryInputStream jsonStream (BinaryData::ts_nine_json, BinaryData::ts_nine_jsonSize, false);
+    model_pointer = std::make_unique<const char*> (TS9_data);
+    modelSize_pointer = std::make_unique<const int> (TS9_dataSize);
+    
+    juce::MemoryInputStream jsonStream (*model_pointer, *modelSize_pointer, false);
     auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
     neuralNet[0].parseJson (jsonInput);
     neuralNet[1].parseJson (jsonInput);
@@ -106,6 +109,13 @@ void Two_inputAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    std::cout << "preparetoplay called" <<std::endl;
+    
+    juce::MemoryInputStream jsonStream (*model_pointer, *modelSize_pointer, false);
+    auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
+    neuralNet[0].parseJson (jsonInput);
+    neuralNet[1].parseJson (jsonInput);
+    
     neuralNet[0].reset();
     neuralNet[1].reset();
 }
@@ -150,6 +160,22 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     
     auto v {apvts.getRawParameterValue("VOLUME")};
     auto volume = v->load();
+    
+    auto ts {apvts.getRawParameterValue("TS9")};
+    auto TS9_b = ts->load();
+    if(TS9_b){
+        model_pointer = std::make_unique<const char*> (TS9_data);
+        modelSize_pointer = std::make_unique<const int> (TS9_dataSize);
+    }
+    else{
+        model_pointer = std::make_unique<const char*> (Mini_data);
+        modelSize_pointer = std::make_unique<const int> (Mini_dataSize);
+    }
+    if(prev_TS9_b != TS9_b){
+        prepareToPlay(getSampleRate(), buffer.getNumSamples());
+    }
+    prev_TS9_b = TS9_b;
+    
     
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
     {
@@ -204,5 +230,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout Two_inputAudioProcessor::cre
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("DRIVE", 1), "drive", 0.0f, 1.0f, 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("VOLUME", 2), "volume", 0.0f, 1.5f, 1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("TONE", 3), "tone", 0.0f, 1.0f, 1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterBool> (juce::ParameterID("TS9", 4), "ts9", true));
+    params.push_back(std::make_unique<juce::AudioParameterBool> (juce::ParameterID("MINI", 5), "mini", false));
     return {params.begin(), params.end()};
 }
