@@ -4,6 +4,8 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" headerPath="/Users/thomasgarvey/Documents/MMT/GarveyThomas_MMT_Thesis/blackbox.nosync/RTNeural/RTNeural&#10;/opt/homebrew/opt/eigen/include/eigen3">
   <MAINGROUP id="rf4Ike" name="two_input">
     <GROUP id="{6D2BA0C3-B0BD-F314-5A89-44452B4D5B57}" name="Source">
+      <FILE id="DAP4FR" name="Components.cpp" compile="1" resource="0" file="Source/Components.cpp"/>
+      <FILE id="qWcdyl" name="Components.h" compile="0" resource="0" file="Source/Components.h"/>
       <FILE id="ARaxVH" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="XcDYKd" name="PluginProcessor.h" compile="0" resource="0"
@@ -14,6 +16,12 @@
     </GROUP>
     <FILE id="YY1l4U" name="ts_nine.json" compile="0" resource="1" file="../model_export/ts_nine.json"/>
     <FILE id="Ga8Jbv" name="ts_mini.json" compile="0" resource="1" file="../model_export/ts_mini.json"/>
+    <FILE id="eUoJPd" name="green.jpeg" compile="0" resource="1" file="../../../../../Downloads/green.jpeg"/>
+    <FILE id="tL10h0" name="Mighty Souly.otf" compile="0" resource="1"
+          file="../../../../../Library/Fonts/Mighty Souly.otf"/>
+    <FILE id="QilpqK" name="DIN Condensed Bold.ttf" compile="0" resource="1"
+          file="/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"/>
+    <FILE id="IuNnMf" name="name.png" compile="0" resource="1" file="../../../../../Downloads/name.png"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
