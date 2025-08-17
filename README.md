@@ -38,3 +38,8 @@ The following updates need to be included for this plugin:
         - Safeguard no output when silent
         - Allow dropdown menu to allow for user to select from various TS models (i.e. TS mini)
         - Prep for release
+
+## Lessons Learned
+- ui
+    - set universal font settings
+    - there has to be a better way to set layout
