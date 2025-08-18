@@ -12,6 +12,8 @@
 #define RTNEURAL_DEFAULT_ALIGNMENT 16
 #include <JuceHeader.h>
 #include "RTNeural.h"
+#include "LowPassFilter.h"
+#include <juce_dsp/juce_dsp.h>
 
 //==============================================================================
 /**
@@ -56,6 +58,7 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
+    void updateFilter();
 
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
@@ -79,10 +82,8 @@ private:
     RTNeural::DenseT<float, 64, 1>
     > neuralNet[2];
     
-
-
-
-
+    
+    juce::dsp::ProcessorDuplicator<juce::dsp::StateVariableFilter::Filter<float>, juce::dsp::StateVariableFilter::Parameters<float>> stateVariableFilter;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Two_inputAudioProcessor)
 };

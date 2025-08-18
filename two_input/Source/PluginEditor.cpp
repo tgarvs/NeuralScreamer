@@ -11,7 +11,7 @@
 
 //==============================================================================
 Two_inputAudioProcessorEditor::Two_inputAudioProcessorEditor (Two_inputAudioProcessor& p)
-: AudioProcessorEditor (&p), audioProcessor (p), driveLabel("DRIVE"), volLabel("LEVEL"), toneLabel("TONE"), title("NEURAL SCREAMER"), buttonLabel("MODEL")
+: AudioProcessorEditor (&p), audioProcessor (p), driveLabel("DRIVE"), volLabel("LEVEL"), toneLabel("TONE"), buttonLabel("MODEL"), title("NEURAL SCREAMER")
 {
     setSize (800, 400);
     juce::LookAndFeel::setDefaultLookAndFeel(&myCustomLNF);
@@ -59,18 +59,12 @@ Two_inputAudioProcessorEditor::~Two_inputAudioProcessorEditor()
 //==============================================================================
 void Two_inputAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
-//    g.fillAll (juce::Colours::black);
     juce::Image background = juce::ImageCache::getFromMemory (BinaryData::green3_jpg, BinaryData::green3_jpgSize);
     g.drawImageAt (background.rescaled(getWidth(), getHeight()), 0, 0);
-    
     
     //Setting silver borders
     silver_borders(g);
 }
-
-
-
 
 
 
@@ -103,20 +97,16 @@ void Two_inputAudioProcessorEditor::resized()
     driveLabel.setBounds(driveSlider.getBounds().getCentreX() - labelW/2,
                          labelY,
                          labelW, labelH);
-//
     toneLabel.setBounds(toneSlider.getBounds().getCentreX() - labelW/2,
                         labelY,
                          labelW, labelH);
-//
     volLabel.setBounds(volSlider.getBounds().getCentreX() - labelW/2,
                        labelY,
                          labelW, labelH);
-    
     buttonLabel.setBounds(TS9_model.getBounds().getCentreX() - labelW/2,
                           labelY,
                          labelW, labelH);
-
-
+    
     
     //update  fonts
     auto fontSize {getHeight() * 0.11};
@@ -128,15 +118,10 @@ void Two_inputAudioProcessorEditor::resized()
     
  
     //Title
-    title.setBounds(getWidth()/2 - labelW*(2.5/2), getHeight() * 0.019, labelW*2.5, labelH*1.5);
+    title.setBounds(getWidth()/2 - labelW*(2.5/2), getHeight() * 0.019, labelW*2.54, labelH*1.5);
     title.setColour(juce::Label::textColourId,
-                    juce::Colours::white
-                    );
+                    juce::Colours::white);
     title.setFont(juce::FontOptions(fontSize*1.1));
-
-    
-    
- 
     
 }
 
@@ -144,17 +129,14 @@ void Two_inputAudioProcessorEditor::resized()
 void Two_inputAudioProcessorEditor::silver_borders (juce::Graphics& g)
 {
     auto sliderHeight = (getHeight() * 0.4) * 1.5;
-//    auto heightOffset = (getHeight()/2 - (sliderHeight/3.5)) * 0.6;
     auto heightOffset = driveSlider.getBounds().getY() - (driveSlider.getBounds().getHeight() * 0.45);
     auto cornerSize {10};
     auto thickness2 {8};
     auto thickness1 {5};
 
     
-    
     //small borders
     g.setColour(juce::Colours::white);
-    
     g.drawRoundedRectangle(driveSlider.getBounds().getCentreX() - driveSlider.getBounds().getWidth()/2,
                            heightOffset,
                            driveSlider.getBounds().getWidth() * 2,
@@ -186,13 +168,9 @@ void Two_inputAudioProcessorEditor::silver_borders (juce::Graphics& g)
     border.lineTo(w*WRmult, h*HTmult);
     border.lineTo(w*0.7f, h*HTmult);
 
-    
-    
     juce::ColourGradient grad (juce::Colours::silver, {float(getWidth())/2.f, float(getHeight()) + 200}, juce::Colours::white, {float(getWidth())/2.f, 0}, false);
     g.setGradientFill(grad);
     juce::PathStrokeType stroke (thickness2, juce::PathStrokeType::curved, juce::PathStrokeType::rounded);
     g.strokePath(border, stroke);
     
-
-
 }

@@ -106,11 +106,7 @@ void Two_inputAudioProcessor::changeProgramName (int index, const juce::String& 
 
 //==============================================================================
 void Two_inputAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
-{
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
-    std::cout << "preparetoplay called" <<std::endl;
-    
+{    
     juce::MemoryInputStream jsonStream (*model_pointer, *modelSize_pointer, false);
     auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
     neuralNet[0].parseJson (jsonInput);
@@ -118,7 +114,27 @@ void Two_inputAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     
     neuralNet[0].reset();
     neuralNet[1].reset();
+    
+    juce::dsp::ProcessSpec spec;
+    spec.sampleRate = sampleRate;
+    spec.maximumBlockSize = samplesPerBlock;
+    spec.numChannels = getMainBusNumInputChannels();
+    
+    stateVariableFilter.reset();
+    updateFilter();
+    stateVariableFilter.prepare(spec);
+    
 }
+
+
+void Two_inputAudioProcessor::updateFilter()
+{
+    auto c = apvts.getRawParameterValue("TONE")->load();
+//    auto cutoff = juce::jmap (c, 0.0f, 1.0f, 20.f, 20000.f);
+    stateVariableFilter.state->type = juce::dsp::StateVariableFilter::Parameters<float>::Type::lowPass;
+    stateVariableFilter.state->setCutOffFrequency(getSampleRate(), c);
+}
+
 
 void Two_inputAudioProcessor::releaseResources()
 {
@@ -155,12 +171,17 @@ bool Two_inputAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
+    
+    //Read drive knob
     auto d {apvts.getRawParameterValue("DRIVE")};
     auto drive = d->load();
     
+    //Read volume knob
     auto v {apvts.getRawParameterValue("VOLUME")};
     auto volume = v->load();
     
+    
+    //Check to see which button is on and update model if changes
     auto ts {apvts.getRawParameterValue("TS9")};
     auto TS9_b = ts->load();
     if(TS9_b){
@@ -177,6 +198,7 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     prev_TS9_b = TS9_b;
     
     
+    //process samples
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
     {
         auto* x = buffer.getWritePointer (ch);
@@ -184,10 +206,15 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         {
             float input[] = { x[n], drive }; //needs to be a pointer to a float (i.e. a single array?)
             
-            x[n] = (neuralNet[ch].forward(input)) * volume;
-
+            x[n] = (neuralNet[ch].forward(input)) * (volume*0.9);
         }
     }
+    
+    
+    //lowpass filtering
+    juce::dsp::AudioBlock<float> block {buffer};
+    updateFilter();
+    stateVariableFilter.process(juce::dsp::ProcessContextReplacing<float> (block));
 }
 
 
@@ -227,11 +254,15 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 
 
 juce::AudioProcessorValueTreeState::ParameterLayout Two_inputAudioProcessor::createParams(){
+
+
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("DRIVE", 1), "drive", 0.0f, 1.0f, 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("VOLUME", 2), "volume", 0.0f, 1.5f, 1.0f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("TONE", 3), "tone", 0.0f, 1.0f, 1.0f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("TONE", 3), "tone", juce::NormalisableRange<float>(20.0f, 20000.0f, 1.0f, 0.4f), 20000.0f));
     params.push_back(std::make_unique<juce::AudioParameterBool> (juce::ParameterID("TS9", 4), "ts9", true));
     params.push_back(std::make_unique<juce::AudioParameterBool> (juce::ParameterID("MINI", 5), "mini", false));
     return {params.begin(), params.end()};
 }
+
+
