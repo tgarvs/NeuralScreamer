@@ -35,7 +35,7 @@ void  CustomLNF::drawRotarySlider (juce::Graphics &g, int x, int y, int width, i
     knobPath.addEllipse(bounds.getCentreX()-arcRadius, bounds.getCentreY()-arcRadius, arcRadius*2, arcRadius*2);
 
     //draw drop shadow
-    juce::DropShadow shadow (juce::Colours::black, 20, {20, 20});
+    juce::DropShadow shadow (juce::Colours::black, 15, {15, 15});
     shadow.drawForPath(g, knobPath);
     
     //fill the circle
@@ -52,8 +52,8 @@ void  CustomLNF::drawRotarySlider (juce::Graphics &g, int x, int y, int width, i
     for(int i = 0; i <11; ++i)
     {
         const float t  = juce::jmap (float(i), 0.0f, 10.f, rotaryStartAngle, rotaryEndAngle);
-        float x  = bounds.getCentreX() - (arcRadius+10) * std::sin (t);
-        float y  = bounds.getCentreY() - (arcRadius+10) * std::cos (t);
+        float x  = bounds.getCentreX() - (arcRadius+10) * std::sin (t) - 0.5;
+        float y  = bounds.getCentreY() - (arcRadius+10) * std::cos (t) - 0.5;
         g.drawEllipse(x, y, 1, 1, 2);
     }
     
@@ -116,67 +116,43 @@ juce::Label* CustomLNF::createSliderTextBox (juce::Slider& slider)
 }
 
 
-//
-//void CustomLNF::drawLabel (juce::Graphics& g, juce::Label& label)
-//{
-//    g.fillAll (label.findColour (juce::Label::backgroundColourId));
-//    auto fontSize {label.getParentHeight() * 0.055};
-//
-//    if (! label.isBeingEdited())
-//    {
-//        auto alpha = label.isEnabled() ? 1.0f : 0.5f;
-//        const juce::Font font (getLabelFont (label));
-//
-//        g.setColour (label.findColour (juce::Label::textColourId).withMultipliedAlpha (alpha));
-//        g.setFont (font);
-//
-////        g.setFont (juce::FontOptions(fontSize));
-////        std::cout << "DRAWLABEL FONT UPDATED : " << fontSize <<std::endl;
-//
-//        auto textArea = getLabelBorderSize (label).subtractedFrom (label.getLocalBounds());
-//
-//        g.drawFittedText (label.getText(), textArea, label.getJustificationType(),
-//                          juce::jmax (1, (int) ((float) textArea.getHeight() / font.getHeight())),
-//                          label.getMinimumHorizontalScale());
-//
-//        g.setColour (label.findColour (juce::Label::outlineColourId).withMultipliedAlpha (alpha));
-//    }
-//    else if (label.isEnabled())
-//    {
-//        g.setColour (label.findColour (juce::Label::outlineColourId));
-//    }
-//
-//    g.drawRect (label.getLocalBounds());
-//}
-
 
 
 
 
 void CustomLNF::drawToggleButton (juce::Graphics& g, juce::ToggleButton& button, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
-    auto fontSize = (float) button.getHeight() * 0.4f;
-//    auto fontSize = (float)button.getParentHeight() * 0.024f;
-//    auto tickWidth = fontSize * 1.1f;
-    
-    drawTickBox (g, button, button.getLocalBounds().getX(), button.getLocalBounds().getY(),
-                 button.getLocalBounds().getWidth(), button.getLocalBounds().getHeight(),
+    juce::Rectangle<float> newBounds (button.getLocalBounds().toFloat().reduced(1));
+    juce::Path tickPath;
+    auto fontSize = (float) newBounds.getHeight() * 0.4f;
+
+    drawTickBox (g, button,
+                 newBounds.getX(), newBounds.getY(), newBounds.getWidth(), newBounds.getHeight(),
                  button.getToggleState(),
                  button.isEnabled(),
                  shouldDrawButtonAsHighlighted,
                  shouldDrawButtonAsDown);
 
-    g.setColour (button.findColour (juce::ToggleButton::textColourId));
+    g.setColour(juce::Colour((juce::uint8)0, (juce::uint8)212, (juce::uint8)144, (juce::uint8)255));
     g.setFont (fontSize);
-
-    if (! button.isEnabled())
-        g.setOpacity (0.5f);
+    
+//    g.drawFittedText (button.getButtonText(),
+//                      button.getLocalBounds().withTrimmedLeft (button.getLocalBounds().getWidth()*0.05).withTrimmedTop(button.getLocalBounds().getHeight()*0.1),
+//                      juce::Justification::centred, 10);
+    
     g.drawFittedText (button.getButtonText(),
-                      button.getLocalBounds().withTrimmedLeft (button.getLocalBounds().getWidth()*0.05).withTrimmedTop(button.getLocalBounds().getHeight()*0.1),
+                      newBounds.toNearestInt().withTrimmedLeft (newBounds.getWidth()*0.05).withTrimmedTop(newBounds.getHeight()*0.1),
                       juce::Justification::centred, 10);
 
+
+    if (! button.isEnabled()){
+
+    }
     
+//    g.setColour(juce::Colours::black);
+//    g.drawRect(button.getLocalBounds());
 }
+
 
 
 
@@ -187,29 +163,70 @@ void CustomLNF::drawTickBox (juce::Graphics& g, juce::Component& component,
                                   [[maybe_unused]] const bool shouldDrawButtonAsHighlighted,
                                   [[maybe_unused]] const bool shouldDrawButtonAsDown)
 {
+
     juce::Rectangle<float> tickBounds (x, y, w, h);
     juce::Path tickPath;
-
-    tickPath.addRoundedRectangle(tickBounds, 10);
-
-    juce::DropShadow shadow (juce::Colours::black, 20, {20, 20});
-    shadow.drawForPath(g, tickPath);
     
-    g.setColour (juce::Colours::white);
-    g.strokePath (tickPath, juce::PathStrokeType (5.0f));
+    
+    if(component.isMouseOver()){
+        tickPath.addRoundedRectangle(tickBounds, 10);
+        
+        juce::DropShadow shadow (juce::Colours::black, 20, {10, 10});
+        shadow.drawForPath(g, tickPath);
+        
+        juce::DropShadow shadow2 (juce::Colours::black, 1, {10, 10});
+        shadow.drawForPath(g, tickPath);
+        
+        g.setColour (juce::Colours::silver.withAlpha( (juce::uint8)155) );
+        g.fillPath(tickPath);
+        
+        g.setColour (juce::Colours::silver);
+        g.drawRoundedRectangle(tickBounds, 10, 1);
+    }
+    
+    else{
+        tickPath.addRoundedRectangle(tickBounds, 10);
 
+        juce::DropShadow shadow (juce::Colours::black, 20, {10, 10});
+        shadow.drawForPath(g, tickPath);
+        
+        juce::DropShadow shadow2 (juce::Colours::black, 1, {10, 10});
+        shadow.drawForPath(g, tickPath);
+        
+        g.setColour (juce::Colours::white);
+        g.fillPath(tickPath);
+        
+        g.setColour (juce::Colours::silver);
+        g.drawRoundedRectangle(tickBounds, 10, 1);
+    }
+    
 
     auto radius {component.getLocalBounds().getWidth()*0.1};
     if (ticked)
     {
 //        g.setColour (juce::Colours::white);
-        g.setColour(juce::Colour((juce::uint8)0, (juce::uint8)212, (juce::uint8)144, (juce::uint8)255));
-        g.fillEllipse((component.getLocalBounds().getCentreX()-radius/2) - component.getLocalBounds().getWidth()*0.3, component.getLocalBounds().getCentreY()-radius/2, radius, radius);
+//        g.setColour(juce::Colour((juce::uint8)0, (juce::uint8)212, (juce::uint8)144, (juce::uint8)255));
+//        g.setColour(juce::Colour((juce::uint8)247, (juce::uint8)32, (juce::uint8)39, (juce::uint8)255));
+        g.setColour(juce::Colour((juce::uint8)3, (juce::uint8)112, (juce::uint8)179, (juce::uint8)255));
+//        g.setColour(juce::Colour((juce::uint8)110, (juce::uint8)183, (juce::uint8)228, (juce::uint8)255));
 
-//        auto tick = getTickShape (0.75f);
-//        g.fillPath (tick, tick.getTransformToScaleToFit (tickBounds.reduced (4, 5).toFloat(), false));
+//        g.fillEllipse((component.getLocalBounds().getCentreX()-radius/2) - component.getLocalBounds().getWidth()*0.3, component.getLocalBounds().getCentreY()-radius/2, radius, radius);
+        
+        g.fillEllipse((tickBounds.getCentreX()-radius/2) - tickBounds.getWidth()*0.3, tickBounds.getCentreY()-radius/2, radius, radius);
     }
 }
 
 
+
+
+void CustomToggleButton::mouseEnter(const juce::MouseEvent & event)
+{
+    repaint();
+}
+
+
+void CustomToggleButton::mouseExit(const juce::MouseEvent & event)
+{
+    repaint();
+}
 

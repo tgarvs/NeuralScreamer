@@ -11,7 +11,7 @@
 
 //==============================================================================
 Two_inputAudioProcessorEditor::Two_inputAudioProcessorEditor (Two_inputAudioProcessor& p)
-: AudioProcessorEditor (&p), audioProcessor (p), driveLabel("DRIVE"), volLabel("LEVEL"), toneLabel("TONE"), buttonLabel("MODEL")
+: AudioProcessorEditor (&p), audioProcessor (p), driveLabel("DRIVE"), volLabel("LEVEL"), toneLabel("TONE"), title("NEURAL SCREAMER"), buttonLabel("MODEL")
 {
     setSize (800, 400);
     juce::LookAndFeel::setDefaultLookAndFeel(&myCustomLNF);
@@ -34,21 +34,16 @@ Two_inputAudioProcessorEditor::Two_inputAudioProcessorEditor (Two_inputAudioProc
 
     
     //Model Selector buttons
-    TS9_model.setClickingTogglesState (true);
-    Mini_model.setClickingTogglesState (true);
-
-    TS9_model.setRadioGroupId (model_buttons);
-    Mini_model.setRadioGroupId (model_buttons);
-    
     addAndMakeVisible(TS9_model);
     addAndMakeVisible(buttonLabel);
-    
     TS9_button_attachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (audioProcessor.apvts, "TS9", TS9_model);
 
     addAndMakeVisible(Mini_model);
     Mini_button_attachment = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment> (audioProcessor.apvts, "MINI", Mini_model);
 
 
+    //title
+    addAndMakeVisible(title);
     
     //to make the plugin resizable --> kinda wonky on Reaper?
     setResizable(true, true);
@@ -66,15 +61,15 @@ void Two_inputAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
 //    g.fillAll (juce::Colours::black);
-    juce::Image background = juce::ImageCache::getFromMemory (BinaryData::green_jpeg, BinaryData::green_jpegSize);
+    juce::Image background = juce::ImageCache::getFromMemory (BinaryData::green3_jpg, BinaryData::green3_jpgSize);
     g.drawImageAt (background.rescaled(getWidth(), getHeight()), 0, 0);
     
     
     //Setting silver borders
     silver_borders(g);
-    
-    
 }
+
+
 
 
 
@@ -93,8 +88,11 @@ void Two_inputAudioProcessorEditor::resized()
     
     
     //update buttons
-    TS9_model.setBounds(getWidth()*0.075, heightOffset + getHeight()*0.04, sliderWidth*0.8, sliderHeight*0.3);
-    Mini_model.setBounds(getWidth()*0.075, heightOffset+(sliderHeight*0.3)*1.2 + getHeight()*0.04, sliderWidth*0.8, sliderHeight*0.3);
+    auto buttonW = sliderWidth*0.8;
+    auto buttonH = sliderHeight*0.3;
+    
+    TS9_model.setBounds(getWidth()*0.075, heightOffset + getHeight()*0.04, buttonW, buttonH);
+    Mini_model.setBounds(getWidth()*0.075, heightOffset+(sliderHeight*0.3)*1.2 + getHeight()*0.04, buttonW, buttonH);
     
     
     //update knob titles
@@ -119,64 +117,84 @@ void Two_inputAudioProcessorEditor::resized()
 
 
     
-    //update title fonts
+    //update  fonts
     auto fontSize {getHeight() * 0.11};
     driveLabel.setFont(juce::FontOptions(fontSize));
     toneLabel.setFont(juce::FontOptions(fontSize));
     volLabel.setFont(juce::FontOptions(fontSize));
     buttonLabel.setFont(juce::FontOptions(fontSize));
     
+    
+ 
+    title.setBounds(getWidth()/2 - labelW*(2.5/2), getHeight() * 0.015, labelW*2.5, labelH*1.1);
+    title.setColour(juce::Label::textColourId,
+                    juce::Colours::white
+                    );
+    title.setFont(juce::FontOptions(fontSize*1.1));
 
+    
+    
+ 
+    
 }
 
 
 void Two_inputAudioProcessorEditor::silver_borders (juce::Graphics& g)
 {
-    auto sliderWidth = getWidth() * 0.2;
     auto sliderHeight = (getHeight() * 0.4) * 1.5;
     auto heightOffset = (getHeight()/2 - (sliderHeight/3.5)) * 0.6;
     auto cornerSize {10};
-    auto thickness2 {5};
-    auto thickness1 {3};
-    auto thickness3 {1};
+    auto thickness2 {8};
+    auto thickness1 {5};
+
     
-
-
     
     //small borders
-
-
-//    g.setColour(juce::Colours::silver);
-    g.setColour(juce::Colour((juce::uint8)0, (juce::uint8)212, (juce::uint8)144, (juce::uint8)255));
-    g.drawRoundedRectangle(getWidth()/2 - sliderWidth, heightOffset, sliderWidth*2, sliderHeight, cornerSize, thickness1);
-    g.drawRoundedRectangle(getWidth()/2 + getWidth()*0.445 - sliderWidth, heightOffset, sliderWidth, sliderHeight, cornerSize, thickness1);
-    g.drawRoundedRectangle(getWidth()/2 - getWidth()*0.445, heightOffset, sliderWidth, sliderHeight, cornerSize, thickness1);
+    g.setColour(juce::Colours::white);
     
-    g.setColour(juce::Colours::silver);
-    g.drawRoundedRectangle(getWidth()/2 - sliderWidth, heightOffset, sliderWidth*2, sliderHeight, cornerSize, thickness3);
-    g.drawRoundedRectangle(getWidth()/2 + getWidth()*0.445 - sliderWidth, heightOffset, sliderWidth, sliderHeight, cornerSize, thickness3);
-    g.drawRoundedRectangle(getWidth()/2 - getWidth()*0.445, heightOffset, sliderWidth, sliderHeight, cornerSize, thickness3);
-
-
-    
+    g.drawRoundedRectangle(driveSlider.getBounds().getCentreX() - driveSlider.getBounds().getWidth()/2,
+                           heightOffset,
+                           driveSlider.getBounds().getWidth() * 2,
+                           sliderHeight, cornerSize, thickness1);
+    g.drawRoundedRectangle(TS9_model.getBounds().getCentreX() - TS9_model.getBounds().getWidth()*0.62,
+                           heightOffset,
+                           driveSlider.getBounds().getWidth(),
+                           sliderHeight, cornerSize, thickness1);
+    g.drawRoundedRectangle(volSlider.getBounds().getCentreX() - driveSlider.getBounds().getWidth()/2,
+                           heightOffset,
+                           volSlider.getBounds().getWidth(),
+                           sliderHeight, cornerSize, thickness1);
     
     
     //big border
-    
-    //point by point
     juce::Path border;
-    juce::Rectangle<float> outerBorder (getLocalBounds().reduced(10, 40).toFloat());
-    border.startNewSubPath({outerBorder.getX() + float(getWidth())*0.1f, outerBorder.getY()});
-    border.lineTo(outerBorder.getTopLeft());
-    border.lineTo(outerBorder.getBottomLeft());
-    border.lineTo(outerBorder.getBottomRight());
-    border.lineTo(outerBorder.getTopRight());
-    border.lineTo(outerBorder.getX() + getWidth()*0.4f, outerBorder.getY());
+    juce::Rectangle<float> outerBorder (getLocalBounds().reduced(10, 30).toFloat());
+//    border.startNewSubPath({outerBorder.getX() + float(getWidth())*0.279f, outerBorder.getY()});
+//    border.lineTo(outerBorder.getTopLeft());
+//    border.lineTo(outerBorder.getBottomLeft());
+//    border.lineTo(outerBorder.getBottomRight());
+//    border.lineTo(outerBorder.getTopRight());
+//    border.lineTo(outerBorder.getX() + getWidth()*0.7f, outerBorder.getY());
     
-//    g.setColour(juce::Colour((juce::uint8)0, (juce::uint8)212, (juce::uint8)144, (juce::uint8)255));
+    float w = getWidth();
+    float h = getHeight();
+    float WLmult = 0.013f;
+    float WRmult = 1-WLmult;
+    float HTmult = 0.08f;
+    float HBmult = 1-HTmult;
+    
+    border.startNewSubPath({w*0.3f, h*HTmult});
+    border.lineTo(w*WLmult, h*HTmult);
+    border.lineTo(w*WLmult, h*HBmult);
+    border.lineTo(w*WRmult, h*HBmult);
+    border.lineTo(w*WRmult, h*HTmult);
+    border.lineTo(w*0.7f, h*HTmult);
 
     
-    g.setColour(juce::Colours::white);
+    
+    
+    juce::ColourGradient grad (juce::Colours::silver, {float(getWidth())/2.f, float(getHeight()) + 200}, juce::Colours::white, {float(getWidth())/2.f, 0}, false);
+    g.setGradientFill(grad);
     juce::PathStrokeType stroke (thickness2, juce::PathStrokeType::curved, juce::PathStrokeType::rounded);
     g.strokePath(border, stroke);
     

@@ -26,9 +26,6 @@ public:
                                       [[maybe_unused]] const bool isEnabled,
                                       [[maybe_unused]] const bool shouldDrawButtonAsHighlighted,
                                       [[maybe_unused]] const bool shouldDrawButtonAsDown) override;
-    
-   
-    
 };
 
 
@@ -66,10 +63,9 @@ public:
         setLookAndFeel(&LNF);
         setText(name, juce::dontSendNotification);
         setJustificationType(juce::Justification::centred);
-        
         auto fontSize {50}; //getParentHeight() * 0.025};
         setFont(juce::FontOptions(fontSize));
-
+        
     }
     
     ~CustomLabel()
@@ -78,5 +74,35 @@ public:
     }
     
 private:
+     CustomLNF LNF;
+};
+
+
+
+class CustomToggleButton : public juce::ToggleButton
+{
+public:
+    CustomToggleButton(const int model_buttons, const std::string& text)
+    : juce::ToggleButton(text), shadow(juce::DropShadow(juce::Colours::black, 15, {10, 10}))
+    {
+        setLookAndFeel(&LNF);
+        setClickingTogglesState (true);
+        setRadioGroupId (model_buttons);
+        setButtonText(text);
+        
+        shadow.setOwner(this);
+    }
+    
+    ~CustomToggleButton()
+    {
+        setLookAndFeel(nullptr);
+    }
+    
+    void mouseEnter(const juce::MouseEvent & event) override;
+    void mouseExit(const juce::MouseEvent & event) override;
+    
+private:
     CustomLNF LNF;
+    bool mouseOver {false};
+    juce::DropShadower shadow;
 };

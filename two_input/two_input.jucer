@@ -22,6 +22,12 @@
     <FILE id="QilpqK" name="DIN Condensed Bold.ttf" compile="0" resource="1"
           file="/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"/>
     <FILE id="IuNnMf" name="name.png" compile="0" resource="1" file="../../../../../Downloads/name.png"/>
+    <FILE id="loYa4J" name="green2.jpeg" compile="0" resource="1" file="../../../../../Desktop/green2.jpeg"/>
+    <FILE id="tWDZw5" name="green3.jpg" compile="0" resource="1" file="../../../../../Downloads/green3.jpg"/>
+    <FILE id="BDmzaw" name="green4.jpg" compile="0" resource="1" file="../../../../../Downloads/green4.jpg"/>
+    <FILE id="V7l3tY" name="green5.jpg" compile="0" resource="1" file="../../../../../Downloads/green5.jpg"/>
+    <FILE id="tzgI0R" name="green7.jpg" compile="0" resource="1" file="../../../../../Downloads/green7.jpg"/>
+    <FILE id="KQpVLf" name="green6.jpg" compile="0" resource="1" file="../../../../../Downloads/green6.jpg"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>

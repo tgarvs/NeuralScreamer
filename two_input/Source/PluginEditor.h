@@ -47,22 +47,18 @@ private:
     std::unique_ptr<juce::AudioProcessorValueTreeState::SliderAttachment> toneSliderAttachment;
 
     
-    CustomLabel buttonLabel;
-    juce::ToggleButton TS9_model {"TS9 Model"}, Mini_model {"Mini Model"};
-    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> TS9_button_attachment, Mini_button_attachment;
-    
-    
     enum RadioButtonIds {
         model_buttons = 1001
     };
     
-    
-    
-    float location_x {0};
-    float location_y {float(getHeight()/2)};
-    float speed {3};
-    
-    
 
+    CustomLabel buttonLabel;
+    CustomToggleButton TS9_model {model_buttons, "TS9 Model"};
+    CustomToggleButton Mini_model {model_buttons, "Mini Model"};
+    std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> TS9_button_attachment, Mini_button_attachment;
+    
+    
+    CustomLabel title;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Two_inputAudioProcessorEditor)
 };
