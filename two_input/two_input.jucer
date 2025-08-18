@@ -4,6 +4,9 @@
               addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" headerPath="/Users/thomasgarvey/Documents/MMT/GarveyThomas_MMT_Thesis/blackbox.nosync/RTNeural/RTNeural&#10;/opt/homebrew/opt/eigen/include/eigen3">
   <MAINGROUP id="rf4Ike" name="two_input">
     <GROUP id="{6D2BA0C3-B0BD-F314-5A89-44452B4D5B57}" name="Source">
+      <FILE id="pv7wXL" name="LowPassFilter.cpp" compile="1" resource="0"
+            file="Source/LowPassFilter.cpp"/>
+      <FILE id="PoTmxY" name="LowPassFilter.h" compile="0" resource="0" file="Source/LowPassFilter.h"/>
       <FILE id="DAP4FR" name="Components.cpp" compile="1" resource="0" file="Source/Components.cpp"/>
       <FILE id="qWcdyl" name="Components.h" compile="0" resource="0" file="Source/Components.h"/>
       <FILE id="ARaxVH" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -24,6 +27,7 @@
     <FILE id="IuNnMf" name="name.png" compile="0" resource="1" file="../../../../../Downloads/name.png"/>
     <FILE id="loYa4J" name="green2.jpeg" compile="0" resource="1" file="../../../../../Desktop/green2.jpeg"/>
     <FILE id="tWDZw5" name="green3.jpg" compile="0" resource="1" file="../../../../../Downloads/green3.jpg"/>
+    <FILE id="oXEsh7" name="Schluber.ttf" compile="0" resource="1" file="../../../../../Downloads/schluber/Schluber.ttf"/>
     <FILE id="BDmzaw" name="green4.jpg" compile="0" resource="1" file="../../../../../Downloads/green4.jpg"/>
     <FILE id="V7l3tY" name="green5.jpg" compile="0" resource="1" file="../../../../../Downloads/green5.jpg"/>
     <FILE id="tzgI0R" name="green7.jpg" compile="0" resource="1" file="../../../../../Downloads/green7.jpg"/>
