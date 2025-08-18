@@ -12,7 +12,7 @@
 
 CustomLNF::CustomLNF()
 {
-    auto newFont = juce::Typeface::createSystemTypefaceFor (BinaryData::DIN_Condensed_Bold_ttf, BinaryData::DIN_Condensed_Bold_ttfSize);
+    auto newFont = juce::Typeface::createSystemTypefaceFor (BinaryData::Schluber_ttf, BinaryData::Schluber_ttfSize);
     setDefaultSansSerifTypeface (newFont);
 }
 
@@ -141,7 +141,7 @@ void CustomLNF::drawToggleButton (juce::Graphics& g, juce::ToggleButton& button,
 //                      juce::Justification::centred, 10);
     
     g.drawFittedText (button.getButtonText(),
-                      newBounds.toNearestInt().withTrimmedLeft (newBounds.getWidth()*0.05).withTrimmedTop(newBounds.getHeight()*0.1),
+                      newBounds.toNearestInt().withTrimmedTop(newBounds.getHeight()*0.1),
                       juce::Justification::centred, 10);
 
 
@@ -209,8 +209,6 @@ void CustomLNF::drawTickBox (juce::Graphics& g, juce::Component& component,
 //        g.setColour(juce::Colour((juce::uint8)247, (juce::uint8)32, (juce::uint8)39, (juce::uint8)255));
         g.setColour(juce::Colour((juce::uint8)3, (juce::uint8)112, (juce::uint8)179, (juce::uint8)255));
 //        g.setColour(juce::Colour((juce::uint8)110, (juce::uint8)183, (juce::uint8)228, (juce::uint8)255));
-
-//        g.fillEllipse((component.getLocalBounds().getCentreX()-radius/2) - component.getLocalBounds().getWidth()*0.3, component.getLocalBounds().getCentreY()-radius/2, radius, radius);
         
         g.fillEllipse((tickBounds.getCentreX()-radius/2) - tickBounds.getWidth()*0.3, tickBounds.getCentreY()-radius/2, radius, radius);
     }

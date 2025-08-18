@@ -78,7 +78,7 @@ void Two_inputAudioProcessorEditor::resized()
 {
     auto sliderWidth = getWidth() * 0.2;
     auto sliderHeight = getHeight() * 0.4;
-    auto heightOffset = getHeight()/2 - (sliderHeight/3.5);
+    auto heightOffset = getHeight() * 0.42;
 
 
     //update knobs
@@ -98,21 +98,22 @@ void Two_inputAudioProcessorEditor::resized()
     //update knob titles
     auto labelW = getWidth() * 0.15;
     auto labelH = getHeight() * 0.15;
+    float labelY = getHeight() * 0.29;
     
     driveLabel.setBounds(driveSlider.getBounds().getCentreX() - labelW/2,
-                         getHeight() * 0.27,
+                         labelY,
                          labelW, labelH);
 //
     toneLabel.setBounds(toneSlider.getBounds().getCentreX() - labelW/2,
-                         getHeight() * 0.27,
+                        labelY,
                          labelW, labelH);
 //
     volLabel.setBounds(volSlider.getBounds().getCentreX() - labelW/2,
-                         getHeight() * 0.27,
+                       labelY,
                          labelW, labelH);
     
     buttonLabel.setBounds(TS9_model.getBounds().getCentreX() - labelW/2,
-                         getHeight() * 0.27,
+                          labelY,
                          labelW, labelH);
 
 
@@ -126,7 +127,8 @@ void Two_inputAudioProcessorEditor::resized()
     
     
  
-    title.setBounds(getWidth()/2 - labelW*(2.5/2), getHeight() * 0.015, labelW*2.5, labelH*1.1);
+    //Title
+    title.setBounds(getWidth()/2 - labelW*(2.5/2), getHeight() * 0.019, labelW*2.5, labelH*1.5);
     title.setColour(juce::Label::textColourId,
                     juce::Colours::white
                     );
@@ -142,7 +144,8 @@ void Two_inputAudioProcessorEditor::resized()
 void Two_inputAudioProcessorEditor::silver_borders (juce::Graphics& g)
 {
     auto sliderHeight = (getHeight() * 0.4) * 1.5;
-    auto heightOffset = (getHeight()/2 - (sliderHeight/3.5)) * 0.6;
+//    auto heightOffset = (getHeight()/2 - (sliderHeight/3.5)) * 0.6;
+    auto heightOffset = driveSlider.getBounds().getY() - (driveSlider.getBounds().getHeight() * 0.45);
     auto cornerSize {10};
     auto thickness2 {8};
     auto thickness1 {5};
@@ -168,20 +171,13 @@ void Two_inputAudioProcessorEditor::silver_borders (juce::Graphics& g)
     
     //big border
     juce::Path border;
-    juce::Rectangle<float> outerBorder (getLocalBounds().reduced(10, 30).toFloat());
-//    border.startNewSubPath({outerBorder.getX() + float(getWidth())*0.279f, outerBorder.getY()});
-//    border.lineTo(outerBorder.getTopLeft());
-//    border.lineTo(outerBorder.getBottomLeft());
-//    border.lineTo(outerBorder.getBottomRight());
-//    border.lineTo(outerBorder.getTopRight());
-//    border.lineTo(outerBorder.getX() + getWidth()*0.7f, outerBorder.getY());
-    
+
     float w = getWidth();
     float h = getHeight();
     float WLmult = 0.013f;
     float WRmult = 1-WLmult;
-    float HTmult = 0.08f;
-    float HBmult = 1-HTmult;
+    float HTmult = 0.12f;
+    float HBmult = 1-0.08f;//HTmult;
     
     border.startNewSubPath({w*0.3f, h*HTmult});
     border.lineTo(w*WLmult, h*HTmult);
@@ -190,7 +186,6 @@ void Two_inputAudioProcessorEditor::silver_borders (juce::Graphics& g)
     border.lineTo(w*WRmult, h*HTmult);
     border.lineTo(w*0.7f, h*HTmult);
 
-    
     
     
     juce::ColourGradient grad (juce::Colours::silver, {float(getWidth())/2.f, float(getHeight()) + 200}, juce::Colours::white, {float(getWidth())/2.f, 0}, false);

@@ -53,8 +53,8 @@ private:
     
 
     CustomLabel buttonLabel;
-    CustomToggleButton TS9_model {model_buttons, "TS9 Model"};
-    CustomToggleButton Mini_model {model_buttons, "Mini Model"};
+    CustomToggleButton TS9_model {model_buttons, "TS9"};
+    CustomToggleButton Mini_model {model_buttons, "Mini"};
     std::unique_ptr<juce::AudioProcessorValueTreeState::ButtonAttachment> TS9_button_attachment, Mini_button_attachment;
     
     
