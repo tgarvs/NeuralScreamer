@@ -12,7 +12,6 @@
 #define RTNEURAL_DEFAULT_ALIGNMENT 16
 #include <JuceHeader.h>
 #include "RTNeural.h"
-#include "LowPassFilter.h"
 #include <juce_dsp/juce_dsp.h>
 
 //==============================================================================
