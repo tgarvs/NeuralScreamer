@@ -5,7 +5,7 @@ This is a Github repository corresponding with the Master's Thesis, "Black & Whi
 This repository contains an emulation of an Ibanez TS9 Tubescreamer pedal made via Deep Learning. The purpose of this thesis is to compare emulation efficacy and real time capabilities of Neural Network virtual analog modeling against a component based technique -- the DK-Method.
 
 
-
+![Screenshot of Plugin](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Neural Screamer UI")
 
 
 
