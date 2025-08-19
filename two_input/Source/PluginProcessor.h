@@ -57,13 +57,15 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
-    void updateFilter();
+    
 
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
 
 private:
     //==============================================================================
+    
+    
     
     const char* TS9_data {BinaryData::ts_nine_json};
     const int TS9_dataSize {BinaryData::ts_nine_jsonSize};
@@ -82,7 +84,10 @@ private:
     > neuralNet[2];
     
     
-    juce::dsp::ProcessorDuplicator<juce::dsp::StateVariableFilter::Filter<float>, juce::dsp::StateVariableFilter::Parameters<float>> stateVariableFilter;
+    
+    juce::dsp::StateVariableTPTFilter<float> filter;
+    juce::dsp::StateVariableTPTFilterType filtertype {juce::dsp::StateVariableTPTFilterType::lowpass};
+    void reset() override;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Two_inputAudioProcessor)
 };

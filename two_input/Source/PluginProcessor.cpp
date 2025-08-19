@@ -23,19 +23,18 @@ Two_inputAudioProcessor::Two_inputAudioProcessor()
 #endif
 {
     
-//    juce::MemoryInputStream jsonStream (BinaryData::ts_mini_json, BinaryData::ts_mini_jsonSize, false);
-//    auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
-//    neuralNet[0].parseJson (jsonInput);
-//    neuralNet[1].parseJson (jsonInput);
-    
+    //pointer to change models
     model_pointer = std::make_unique<const char*> (TS9_data);
     modelSize_pointer = std::make_unique<const int> (TS9_dataSize);
     
+    //loading in TS9 first as default using RTNeural code
     juce::MemoryInputStream jsonStream (*model_pointer, *modelSize_pointer, false);
     auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
     neuralNet[0].parseJson (jsonInput);
     neuralNet[1].parseJson (jsonInput);
     
+    //setting filter type;
+//    filter.setType(filtertype);
 }
 
 Two_inputAudioProcessor::~Two_inputAudioProcessor()
@@ -120,20 +119,11 @@ void Two_inputAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getMainBusNumInputChannels();
     
-    stateVariableFilter.reset();
-    updateFilter();
-    stateVariableFilter.prepare(spec);
-    
+    filter.reset();
+    filter.prepare(spec);
+    filter.setType(filtertype);
 }
 
-
-void Two_inputAudioProcessor::updateFilter()
-{
-    auto c = apvts.getRawParameterValue("TONE")->load();
-//    auto cutoff = juce::jmap (c, 0.0f, 1.0f, 20.f, 20000.f);
-    stateVariableFilter.state->type = juce::dsp::StateVariableFilter::Parameters<float>::Type::lowPass;
-    stateVariableFilter.state->setCutOffFrequency(getSampleRate(), c);
-}
 
 
 void Two_inputAudioProcessor::releaseResources()
@@ -149,10 +139,6 @@ bool Two_inputAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
     juce::ignoreUnused (layouts);
     return true;
   #else
-    // This is the place where you check if the layout is supported.
-    // In this template code we only support mono or stereo.
-    // Some plugin hosts, such as certain GarageBand versions, will only
-    // load plugins that support stereo bus layouts.
     if (layouts.getMainOutputChannelSet() != juce::AudioChannelSet::mono()
      && layouts.getMainOutputChannelSet() != juce::AudioChannelSet::stereo())
         return false;
@@ -180,6 +166,8 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto v {apvts.getRawParameterValue("VOLUME")};
     auto volume = v->load();
     
+    auto c = apvts.getRawParameterValue("TONE")->load();
+    filter.setCutoffFrequency(c);
     
     //Check to see which button is on and update model if changes
     auto ts {apvts.getRawParameterValue("TS9")};
@@ -212,9 +200,10 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     
     
     //lowpass filtering
-    juce::dsp::AudioBlock<float> block {buffer};
-    updateFilter();
-    stateVariableFilter.process(juce::dsp::ProcessContextReplacing<float> (block));
+    auto block = juce::dsp::AudioBlock<float> {buffer};
+    auto context = juce::dsp::ProcessContextReplacing<float>(block);
+    filter.process(context);
+    
 }
 
 
@@ -266,3 +255,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout Two_inputAudioProcessor::cre
 }
 
 
+
+
+void Two_inputAudioProcessor::reset()
+{
+    filter.reset();
+}
