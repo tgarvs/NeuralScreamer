@@ -5,7 +5,7 @@ This is a Github repository corresponding with the Master's Thesis, "Black & Whi
 This repository contains an emulation of an Ibanez TS9 Tubescreamer pedal made via Deep Learning. The purpose of this thesis is to compare emulation efficacy and real time capabilities of Neural Network virtual analog modeling against a component based technique -- the DK-Method.
 
 
-/var/folders/7m/qfs96yrs71b9ct2x4gs2py8w0000gn/T/TemporaryItems/NSIRD_screencaptureui_dXjhcx/Screenshot 2025-08-19 at 9.20.47 AM.png
+
 
 
 
@@ -22,19 +22,19 @@ Many audio systems are straightforward to model, but can become increasingly dif
 
 
 ### Circuit Modeling
-For this thesis, the white box emulation is a derivation of Eric Tarr's [Tubescreamer clone] (https://github.com/erictarrbelmont/TSPedal/tree/CompletedPlugin). He uses the Discrete-Kirchoff (DK) Method, which is an extension of Modified Nodal Analysis. This method was chosen because it avoids various domain transfers by substituting discrete component equations directly during Nodal Analysis.
+For this thesis, the white box emulation is a derivation of Eric Tarr's [Tubescreamer clone](https://github.com/erictarrbelmont/TSPedal/tree/CompletedPlugin). He uses the Discrete-Kirchoff (DK) Method, which is an extension of Modified Nodal Analysis. This method was chosen because it avoids various domain transfers by substituting discrete component equations directly during Nodal Analysis.
 
 
 ### Deep Learning
-The Neural Network architecture for this thesis was established by Alec Wright in this [paper] (https://www.mdpi.com/2076-3417/10/3/766). One secondary objective of this thesis was to determine if successful plugin companies like Neural DSP, who use this same architecture, are actually creating better products or if they are using Neural Networks as both a marketing ploy and a way to make worse products, but quicker. 
+The Neural Network architecture for this thesis was established by Alec Wright in this [paper](https://www.mdpi.com/2076-3417/10/3/766). One secondary objective of this thesis was to determine if successful plugin companies like Neural DSP, who use this same architecture, are actually creating better products or if they are using Neural Networks as both a marketing ploy and a way to make worse products, but quicker. 
 
 This thesis found that Wright's architecture did provide a more baseline faithful emulation through subjective listening and playing tests.
-Lastly, the model weights were exported and ran as a real time inferencing machine within a JUCE framework using Jatin Chowdhury's [RTNeural] (https://github.com/jatinchowdhury18/RTNeural).
+Lastly, the model weights were exported and ran as a real time inferencing machine within a JUCE framework using Jatin Chowdhury's [RTNeural](https://github.com/jatinchowdhury18/RTNeural).
 
 
 ## Installation From Source
 1. Download Source and the jucer project
-2. Download [RTNeural] (https://github.com/jatinchowdhury18/RTNeural)
+2. Download [RTNeural](https://github.com/jatinchowdhury18/RTNeural)
 3. Set header paths to the RTNeural .h file  and (optional) Eigen library in jucer project globally and all exporters
 4. Update build scheme to build in your daw of choice
 5. Build and enjoy!
