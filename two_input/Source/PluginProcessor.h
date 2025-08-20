@@ -8,18 +8,23 @@
 
 #pragma once
 
-#define RTNEURAL_USE_EIGEN 1
+#define RTNEURAL_USE_XSIMD 1
 #define RTNEURAL_DEFAULT_ALIGNMENT 16
 #include <JuceHeader.h>
 #include "RTNeural.h"
 #include <juce_dsp/juce_dsp.h>
+#include <iostream>
+#include <fstream>
 
 //==============================================================================
 /**
 */
+
+
 class Two_inputAudioProcessor  : public juce::AudioProcessor
 {
 public:
+    
     //==============================================================================
     Two_inputAudioProcessor();
     ~Two_inputAudioProcessor() override;
@@ -56,35 +61,29 @@ public:
     //==============================================================================
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
-    
-    
+//    bool supportsDoublePrecisionProcessing() const override { return false; }
+
 
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
 
 private:
     //==============================================================================
+
     
-    
-    
-    const char* TS9_data {BinaryData::ts_nine_json};
-    const int TS9_dataSize {BinaryData::ts_nine_jsonSize};
-    
-    const char* Mini_data {BinaryData::ts_mini_json};
-    const int Mini_dataSize {BinaryData::ts_mini_jsonSize};
-    
-    std::unique_ptr<const char*> model_pointer;
-    std::unique_ptr<const int> modelSize_pointer;
-    
-    bool prev_TS9_b {true};
+    //TS9 model
+    RTNeural::ModelT<float, 2, 1,
+                    RTNeural::LSTMLayerT<float, 2, 64>,
+                    RTNeural::DenseT<float, 64, 1>
+                    > neuralNet9[2];
     
     RTNeural::ModelT<float, 2, 1,
-    RTNeural::LSTMLayerT<float, 2, 64>,
-    RTNeural::DenseT<float, 64, 1>
-    > neuralNet[2];
+                    RTNeural::LSTMLayerT<float, 2, 64>,
+                    RTNeural::DenseT<float, 64, 1>
+                    > neuralNetMini[2];
     
     
-    
+    //Low Pass Filter
     juce::dsp::StateVariableTPTFilter<float> filter;
     juce::dsp::StateVariableTPTFilterType filtertype {juce::dsp::StateVariableTPTFilterType::lowpass};
     void reset() override;

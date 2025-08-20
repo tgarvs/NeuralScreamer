@@ -15,6 +15,7 @@
 //==============================================================================
 /**
 */
+
 class Two_inputAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
 public:

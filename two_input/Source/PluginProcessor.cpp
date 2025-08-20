@@ -20,21 +20,26 @@ Two_inputAudioProcessor::Two_inputAudioProcessor()
                        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)
                      #endif
                        ), apvts(*this, nullptr, "Parameters", createParams())
+
 #endif
 {
+    //Load model 1
+    juce::MemoryInputStream jsonStream1 (BinaryData::ts_nine_json, BinaryData::ts_nine_jsonSize, false);
+    auto jsonInput1 = nlohmann::json::parse (jsonStream1.readEntireStreamAsString().toStdString());
+    neuralNet9[0].parseJson (jsonInput1);
+    neuralNet9[1].parseJson (jsonInput1);
     
-    //pointer to change models
-    model_pointer = std::make_unique<const char*> (TS9_data);
-    modelSize_pointer = std::make_unique<const int> (TS9_dataSize);
+
+    //Load model 2
+    juce::MemoryInputStream jsonStream2 (BinaryData::ts_mini_json, BinaryData::ts_mini_jsonSize, false);
+    auto jsonInput2 = nlohmann::json::parse (jsonStream2.readEntireStreamAsString().toStdString());
+    neuralNetMini[0].parseJson (jsonInput2);
+    neuralNetMini[1].parseJson (jsonInput2);
     
-    //loading in TS9 first as default using RTNeural code
-    juce::MemoryInputStream jsonStream (*model_pointer, *modelSize_pointer, false);
-    auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
-    neuralNet[0].parseJson (jsonInput);
-    neuralNet[1].parseJson (jsonInput);
     
-    //setting filter type;
-//    filter.setType(filtertype);
+    //Set intial model for pointer
+//    model_ptr = neuralNet9;
+    
 }
 
 Two_inputAudioProcessor::~Two_inputAudioProcessor()
@@ -105,20 +110,20 @@ void Two_inputAudioProcessor::changeProgramName (int index, const juce::String& 
 
 //==============================================================================
 void Two_inputAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
-{    
-    juce::MemoryInputStream jsonStream (*model_pointer, *modelSize_pointer, false);
-    auto jsonInput = nlohmann::json::parse (jsonStream.readEntireStreamAsString().toStdString());
-    neuralNet[0].parseJson (jsonInput);
-    neuralNet[1].parseJson (jsonInput);
+{
+//    juce::FloatVectorOperations::disableDenormalisedNumberSupport();
+
+    neuralNet9[0].reset();
+    neuralNet9[1].reset();
     
-    neuralNet[0].reset();
-    neuralNet[1].reset();
+    neuralNetMini[0].reset();
+    neuralNetMini[1].reset();
     
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
     spec.numChannels = getMainBusNumInputChannels();
-    
+
     filter.reset();
     filter.prepare(spec);
     filter.setType(filtertype);
@@ -156,8 +161,13 @@ bool Two_inputAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts
 
 void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    static double worstMs = 0;
+    const auto t0 = juce::Time::getHighResolutionTicks();
+    
+    
     juce::ScopedNoDenormals noDenormals;
     
+ 
     //Read drive knob
     auto d {apvts.getRawParameterValue("DRIVE")};
     auto drive = d->load();
@@ -172,19 +182,9 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     //Check to see which button is on and update model if changes
     auto ts {apvts.getRawParameterValue("TS9")};
     auto TS9_b = ts->load();
-    if(TS9_b){
-        model_pointer = std::make_unique<const char*> (TS9_data);
-        modelSize_pointer = std::make_unique<const int> (TS9_dataSize);
-    }
-    else{
-        model_pointer = std::make_unique<const char*> (Mini_data);
-        modelSize_pointer = std::make_unique<const int> (Mini_dataSize);
-    }
-    if(prev_TS9_b != TS9_b){
-        prepareToPlay(getSampleRate(), buffer.getNumSamples());
-    }
-    prev_TS9_b = TS9_b;
     
+    auto& nets = TS9_b ? neuralNet9 : neuralNetMini;
+   
     
     //process samples
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
@@ -193,10 +193,15 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         for (int n = 0; n < buffer.getNumSamples(); ++n)
         {
             float input[] = { x[n], drive }; //needs to be a pointer to a float (i.e. a single array?)
-            
-            x[n] = (neuralNet[ch].forward(input)) * (volume*0.9);
+            auto y = nets[ch].forward(input);
+            x[n] = y * (volume * 0.9);
         }
     }
+    
+
+    const auto t1 = juce::Time::getHighResolutionTicks();
+    const auto ms = juce::Time::highResolutionTicksToSeconds(t1 - t0) * 1000.0;
+    if (ms > worstMs) { worstMs = ms; DBG("processBlock ms worst=" << worstMs); }
     
     
     //lowpass filtering
@@ -261,3 +266,5 @@ void Two_inputAudioProcessor::reset()
 {
     filter.reset();
 }
+
+
