@@ -15,11 +15,10 @@
             file="Source/PluginEditor.cpp"/>
       <FILE id="SNDegd" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
-    <FILE id="IuNnMf" name="name.png" compile="0" resource="1" file="../../../../../Downloads/name.png"/>
-    <FILE id="tWDZw5" name="green3.jpg" compile="0" resource="1" file="../../../../../Downloads/green3.jpg"/>
-    <FILE id="oXEsh7" name="Schluber.ttf" compile="0" resource="1" file="../../../../../Downloads/schluber/Schluber.ttf"/>
     <FILE id="bXCi9F" name="ts_mini.json" compile="0" resource="1" file="../model_export/ts_mini.json"/>
     <FILE id="b3FYec" name="ts_nine.json" compile="0" resource="1" file="../model_export/ts_nine.json"/>
+    <FILE id="d5t5nt" name="Schluber.ttf" compile="0" resource="1" file="../Assets/Schluber.ttf"/>
+    <FILE id="bI8FuN" name="green3.jpg" compile="0" resource="1" file="../Assets/green3.jpg"/>
   </MAINGROUP>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
