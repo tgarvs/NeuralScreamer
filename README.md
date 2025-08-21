@@ -38,7 +38,7 @@ Lastly, the model weights were exported and ran as a real time inferencing machi
 
 ## Downloads
 
-[Mac](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/tgarvs/NeuralScreamer/tree/main/NeuralScreamerInstaller/build)
+[Mac](https://github.com/tgarvs/NeuralScreamer/releases/download/v.2.0.2/NeuralScreamerInstaller.pkg)
 
 ## Installation From Source
 1. Download Source and the jucer project
