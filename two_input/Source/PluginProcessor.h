@@ -64,7 +64,7 @@ public:
 //    bool supportsDoublePrecisionProcessing() const override { return false; }
     
 
-
+// APVTS to hold params
     juce::AudioProcessorValueTreeState apvts;
     juce::AudioProcessorValueTreeState::ParameterLayout createParams();
 
@@ -78,6 +78,7 @@ private:
                     RTNeural::DenseT<float, 64, 1>
                     > neuralNet9[2];
     
+    //Mini model
     RTNeural::ModelT<float, 2, 1,
                     RTNeural::LSTMLayerT<float, 2, 64>,
                     RTNeural::DenseT<float, 64, 1>

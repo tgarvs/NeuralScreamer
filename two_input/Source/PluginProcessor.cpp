@@ -36,11 +36,6 @@ Two_inputAudioProcessor::Two_inputAudioProcessor()
     neuralNetMini[0].parseJson (jsonInput2);
     neuralNetMini[1].parseJson (jsonInput2);
     
-    
-    //Set intial model for pointer
-//    model_ptr = neuralNet9;
-    
-    
 }
 
 Two_inputAudioProcessor::~Two_inputAudioProcessor()
@@ -112,14 +107,13 @@ void Two_inputAudioProcessor::changeProgramName (int index, const juce::String& 
 //==============================================================================
 void Two_inputAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-//    juce::FloatVectorOperations::disableDenormalisedNumberSupport();
-
+//Reset neural networks
     neuralNet9[0].reset();
     neuralNet9[1].reset();
-    
     neuralNetMini[0].reset();
     neuralNetMini[1].reset();
     
+//Reset Lowpass Filter
     juce::dsp::ProcessSpec spec;
     spec.sampleRate = sampleRate;
     spec.maximumBlockSize = samplesPerBlock;
@@ -177,6 +171,7 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto v {apvts.getRawParameterValue("VOLUME")};
     auto volume = v->load();
     
+    //Get tone knob and set cutoff freq
     auto c = apvts.getRawParameterValue("TONE")->load();
     filter.setCutoffFrequency(c);
     
@@ -184,9 +179,9 @@ void Two_inputAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto ts {apvts.getRawParameterValue("TS9")};
     auto TS9_b = ts->load();
     
+    //see which network is being used
     auto& nets = TS9_b ? neuralNet9 : neuralNetMini;
    
-    
     //process samples
     for (int ch = 0; ch < buffer.getNumChannels(); ++ch)
     {
@@ -250,9 +245,8 @@ juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 }
 
 
-juce::AudioProcessorValueTreeState::ParameterLayout Two_inputAudioProcessor::createParams(){
-
-
+juce::AudioProcessorValueTreeState::ParameterLayout Two_inputAudioProcessor::createParams()
+{
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
     params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("DRIVE", 1), "drive", 0.0f, 1.0f, 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID("VOLUME", 2), "volume", 0.0f, 1.5f, 1.0f));
