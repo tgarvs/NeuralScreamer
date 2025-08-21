@@ -29,7 +29,7 @@ This repository contains an emulation of an Ibanez TS9 Tubescreamer pedal made v
     - Python: Includes the dataset preprocessing and Keras model scripts
     - Audio: All audio data in various states and formats
     - Model Export: Exported weights/biases/architectures ready to use with RTNeural
-    - Neural Screamer: Source and jucer project for the plugin
+    - Two input: Source and jucer project for the plugin
 
 
 
