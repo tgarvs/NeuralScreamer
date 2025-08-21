@@ -10,6 +10,21 @@ This repository contains an emulation of an Ibanez TS9 Tubescreamer pedal made v
 
 
 
+## Downloads
+
+[Download for mac (10.14 or newer)](https://github.com/tgarvs/NeuralScreamer/releases/download/v.2.0.2/NeuralScreamerInstaller.pkg)
+
+
+
+## Installation From Source
+1. Download Source and the jucer project
+2. Download [RTNeural](https://github.com/jatinchowdhury18/RTNeural)
+3. Set header paths to the RTNeural .h file  and (optional) XSIMD library in jucer project globally and all exporters
+4. Update build scheme to build in your daw of choice
+5. Build and enjoy!
+
+
+
 ## Included Files
     - Python: Includes the dataset preprocessing and Keras model scripts
     - Audio: All audio data in various states and formats
@@ -34,18 +49,6 @@ The Neural Network architecture for this thesis was established by Alec Wright i
 This thesis found that Wright's architecture did provide a more baseline faithful emulation through subjective listening and playing tests.
 
 Lastly, the model weights were exported and ran as a real time inferencing machine within a JUCE framework using Jatin Chowdhury's [RTNeural](https://github.com/jatinchowdhury18/RTNeural).
-
-
-## Downloads
-
-[Mac](https://github.com/tgarvs/NeuralScreamer/releases/download/v.2.0.2/NeuralScreamerInstaller.pkg)
-
-## Installation From Source
-1. Download Source and the jucer project
-2. Download [RTNeural](https://github.com/jatinchowdhury18/RTNeural)
-3. Set header paths to the RTNeural .h file  and (optional) Eigen library in jucer project globally and all exporters
-4. Update build scheme to build in your daw of choice
-5. Build and enjoy!
  
 
 
