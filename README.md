@@ -36,6 +36,9 @@ This thesis found that Wright's architecture did provide a more baseline faithfu
 Lastly, the model weights were exported and ran as a real time inferencing machine within a JUCE framework using Jatin Chowdhury's [RTNeural](https://github.com/jatinchowdhury18/RTNeural).
 
 
+## Downloads
+
+[Mac](https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/tgarvs/NeuralScreamer/tree/main/NeuralScreamerInstaller/build)
 
 ## Installation From Source
 1. Download Source and the jucer project
