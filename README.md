@@ -13,6 +13,7 @@ This repository contains an emulation of an Ibanez TS9 Tube Screamer pedal made 
 ## Downloads
 
 [Download for mac (10.14 or newer)](https://github.com/tgarvs/NeuralScreamer/releases/download/v.2.0.2/NeuralScreamerInstaller.pkg)
+[Download for Windows](https://github.com/tgarvs/NeuralScreamer/releases/download/v.2.0.2/NeuralScreamerInstaller.pkg)
 
 
 
