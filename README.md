@@ -1,5 +1,9 @@
 
 # Neural Screamer
+
+Author: Tom Garvey
+[Connect with me!](https://www.linkedin.com/in/tomgarvey123/)
+
 This is a Github repository corresponding with the Master's Thesis, [Black & White: A Comparative Analysis of Virtual Analog Modeling for Real Time Audio](https://github.com/tgarvs/NeuralScreamer/blob/main/Paper.pdf). 
 
 This repository contains an emulation of an Ibanez TS9 Tube Screamer pedal made via Deep Learning. The purpose of this thesis is to compare emulation efficacy and real time capabilities of Neural Network virtual analog modeling against a component based technique -- the DK-Method.
